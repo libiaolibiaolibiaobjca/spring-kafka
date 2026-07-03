@@ -236,7 +236,8 @@ public class ConcurrentMessageListenerContainerTests {
 				overrides.set(properties);
 				Consumer<Integer, String> created = super.createKafkaConsumer(groupId, clientIdPrefix,
 						clientIdSuffixArg, properties);
-				assertThat(KafkaTestUtils.getPropertyValue(created, "requestTimeoutMs", Long.class)).isEqualTo(23000L);
+				// Kafka 3.9.2: verify via properties instead of reflection
+				assertThat(overrides.get().get(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG)).isEqualTo(23000);
 				return created;
 			}
 

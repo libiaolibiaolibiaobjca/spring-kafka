@@ -37,6 +37,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.DeserializationExceptionHandler.DeserializationHandlerResponse;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.junit.jupiter.api.Test;
 
@@ -91,9 +92,9 @@ public class RecoveringDeserializationExceptionHandlerTests {
 				Recoverer.class.getName());
 		handler.configure(configs);
 		assertThat(KafkaTestUtils.getPropertyValue(handler, "recoverer")).isInstanceOf(Recoverer.class);
-		assertThat(handler.handle(null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
+		assertThat(handler.handle((ProcessorContext) null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
 				new IllegalArgumentException())).isEqualTo(DeserializationHandlerResponse.CONTINUE);
-		assertThat(handler.handle(null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
+		assertThat(handler.handle((ProcessorContext) null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
 				new IllegalStateException())).isEqualTo(DeserializationHandlerResponse.FAIL);
 	}
 
@@ -104,9 +105,9 @@ public class RecoveringDeserializationExceptionHandlerTests {
 		configs.put(RecoveringDeserializationExceptionHandler.KSTREAM_DESERIALIZATION_RECOVERER, Recoverer.class);
 		handler.configure(configs);
 		assertThat(KafkaTestUtils.getPropertyValue(handler, "recoverer")).isInstanceOf(Recoverer.class);
-		assertThat(handler.handle(null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
+		assertThat(handler.handle((ProcessorContext) null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
 				new IllegalArgumentException())).isEqualTo(DeserializationHandlerResponse.CONTINUE);
-		assertThat(handler.handle(null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
+		assertThat(handler.handle((ProcessorContext) null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
 				new IllegalStateException())).isEqualTo(DeserializationHandlerResponse.FAIL);
 	}
 
@@ -118,16 +119,16 @@ public class RecoveringDeserializationExceptionHandlerTests {
 		configs.put(RecoveringDeserializationExceptionHandler.KSTREAM_DESERIALIZATION_RECOVERER, rec);
 		handler.configure(configs);
 		assertThat(KafkaTestUtils.getPropertyValue(handler, "recoverer")).isSameAs(rec);
-		assertThat(handler.handle(null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
+		assertThat(handler.handle((ProcessorContext) null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
 				new IllegalArgumentException())).isEqualTo(DeserializationHandlerResponse.CONTINUE);
-		assertThat(handler.handle(null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
+		assertThat(handler.handle((ProcessorContext) null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
 				new IllegalStateException())).isEqualTo(DeserializationHandlerResponse.FAIL);
 	}
 
 	@Test
 	void withNoRecoverer() {
 		RecoveringDeserializationExceptionHandler handler = new RecoveringDeserializationExceptionHandler();
-		assertThat(handler.handle(null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
+		assertThat(handler.handle((ProcessorContext) null, new ConsumerRecord<byte[], byte[]>("foo", 0, 0, null, null),
 				new IllegalArgumentException())).isEqualTo(DeserializationHandlerResponse.FAIL);
 	}
 

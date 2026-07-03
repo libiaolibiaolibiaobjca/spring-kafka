@@ -45,6 +45,7 @@ import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.Uuid;
 import org.apache.kafka.common.errors.OutOfOrderSequenceException;
 import org.apache.kafka.common.errors.ProducerFencedException;
 import org.apache.kafka.common.errors.TimeoutException;
@@ -1173,6 +1174,11 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 					throw e;
 				}
 			}
+		}
+
+		@Override
+		public Uuid clientInstanceId(Duration timeout) {
+			return this.delegate.clientInstanceId(timeout);
 		}
 
 		@Override

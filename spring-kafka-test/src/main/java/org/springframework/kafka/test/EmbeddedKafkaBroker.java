@@ -349,17 +349,17 @@ public class EmbeddedKafkaBroker implements InitializingBean, DisposableBean {
 		}
 		this.zkConnect = LOOPBACK + ":" + this.zookeeper.getPort();
 		this.kafkaServers.clear();
-		boolean userLogDir = this.brokerProperties.get(KafkaConfig.LogDirProp()) != null && this.count == 1;
+		boolean userLogDir = this.brokerProperties.get("log.dir") != null && this.count == 1;
 		for (int i = 0; i < this.count; i++) {
 			Properties brokerConfigProperties = createBrokerProperties(i);
-			brokerConfigProperties.setProperty(KafkaConfig.ReplicaSocketTimeoutMsProp(), "1000");
-			brokerConfigProperties.setProperty(KafkaConfig.ControllerSocketTimeoutMsProp(), "1000");
-			brokerConfigProperties.setProperty(KafkaConfig.OffsetsTopicReplicationFactorProp(), "1");
-			brokerConfigProperties.setProperty(KafkaConfig.ReplicaHighWatermarkCheckpointIntervalMsProp(),
+			brokerConfigProperties.setProperty("replica.socket.timeout.ms", "1000");
+			brokerConfigProperties.setProperty("controller.socket.timeout.ms", "1000");
+			brokerConfigProperties.setProperty("offsets.topic.replication.factor", "1");
+			brokerConfigProperties.setProperty("replica.highwatermark.checkpoint.interval.ms",
 					String.valueOf(Long.MAX_VALUE));
 			this.brokerProperties.forEach(brokerConfigProperties::put);
-			if (!this.brokerProperties.containsKey(KafkaConfig.NumPartitionsProp())) {
-				brokerConfigProperties.setProperty(KafkaConfig.NumPartitionsProp(), "" + this.partitionsPerTopic);
+			if (!this.brokerProperties.containsKey("num.partitions")) {
+				brokerConfigProperties.setProperty("num.partitions", "" + this.partitionsPerTopic);
 			}
 			if (!userLogDir) {
 				logDir(brokerConfigProperties);
@@ -383,7 +383,7 @@ public class EmbeddedKafkaBroker implements InitializingBean, DisposableBean {
 
 	private void logDir(Properties brokerConfigProperties) {
 		try {
-			brokerConfigProperties.put(KafkaConfig.LogDirProp(),
+			brokerConfigProperties.put("log.dir",
 					Files.createTempDirectory("spring.kafka." + UUID.randomUUID()).toString());
 		}
 		catch (IOException e) {

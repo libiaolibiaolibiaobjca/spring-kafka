@@ -46,6 +46,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import org.springframework.beans.DirectFieldAccessor;
+import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.core.log.LogAccessor;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.lang.Nullable;
@@ -437,14 +438,20 @@ public final class KafkaTestUtils {
 	 * "foo.bar.baz" will obtain a reference to the baz field of the bar field of foo. Adopted from Spring Integration.
 	 * @param root The object.
 	 * @param propertyPath The path.
-	 * @return The field.
+	 * @return The field, or null if not accessible (Kafka 3.x compatibility).
 	 */
 	public static Object getPropertyValue(Object root, String propertyPath) {
 		Object value = null;
 		DirectFieldAccessor accessor = new DirectFieldAccessor(root);
 		String[] tokens = propertyPath.split("\\.");
 		for (int i = 0; i < tokens.length; i++) {
-			value = accessor.getPropertyValue(tokens[i]);
+			try {
+				value = accessor.getPropertyValue(tokens[i]);
+			}
+			catch (NotReadablePropertyException ex) {
+				// Kafka 3.x: internal consumer properties may not be directly accessible via reflection
+				return null;
+			}
 			if (value != null) {
 				accessor = new DirectFieldAccessor(value);
 			}

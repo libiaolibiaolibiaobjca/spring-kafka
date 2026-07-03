@@ -16,22 +16,21 @@ plugins {
 	id 'project-report'
 	id 'idea'
 	id 'org.sonarqube' version '2.8'
-	id 'org.ajoberstar.grgit' version '4.0.1' apply false
+	// id 'org.ajoberstar.grgit' version '4.0.1' apply false  // 禁用：Nexus 无
 	id 'io.spring.nohttp' version '0.0.5.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE' apply false
-	id 'com.jfrog.artifactory' version '4.18.2' apply false
-	id 'org.asciidoctor.jvm.pdf' version '3.3.2'
-	id 'org.asciidoctor.jvm.gems' version '3.3.2'
-	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+	// id 'com.jfrog.artifactory' version '4.18.2' apply false  // 禁用：Nexus 无传递依赖
+	// id 'org.asciidoctor.jvm.pdf' version '3.3.2'  // 禁用：Nexus 无
+	// id 'org.asciidoctor.jvm.gems' version '3.3.2'  // 禁用：Nexus 无
+	// id 'org.asciidoctor.jvm.convert' version '3.3.2'  // 禁用：Nexus 无
 }
 
 apply plugin: 'io.spring.nohttp'
+// def gitPresent = new File('.git').exists()
 
-def gitPresent = new File('.git').exists()
-
-if(gitPresent) {
-	apply plugin: 'org.ajoberstar.grgit'
-}
+// if(gitPresent) {
+// 	apply plugin: 'org.ajoberstar.grgit'
+// }
 
 description = 'Spring for Apache Kafka'
 
@@ -45,10 +44,11 @@ ext {
 	docResourcesVersion = '0.2.5'
 
 
-	if (gitPresent) {
-		modifiedFiles =
-			files(grgit.status().unstaged.modified).filter{ f -> f.name.endsWith('.java') || f.name.endsWith('.kt') }
-	}
+	// git 相关已禁用（grgit 插件不在 Nexus）
+	// if (gitPresent) {
+	// 	modifiedFiles =
+	// 		files(grgit.status().unstaged.modified).filter{ f -> f.name.endsWith('.java') || f.name.endsWith('.kt') }
+	// }
 
 	assertjVersion = '3.22.0'
 	awaitilityVersion = '4.2.0'
@@ -59,7 +59,7 @@ ext {
 	jaywayJsonPathVersion = '2.6.0'
 	junit4Version = '4.13.2'
 	junitJupiterVersion = '5.8.2'
-	kafkaVersion = '3.2.3'
+	kafkaVersion = '3.9.2'
 	log4jVersion = '2.17.2'
 	micrometerVersion = '1.9.16'
 	mockitoVersion = '4.5.1'
@@ -80,7 +80,8 @@ nohttp {
 }
 
 allprojects {
-	group = 'org.springframework.kafka'
+	// BJCA 内部维护分支 GAV 重命名
+	group = projectGroup
 
 	apply plugin: 'io.spring.dependency-management'
 
@@ -155,7 +156,7 @@ subprojects { subproject ->
 	eclipse.project.natures += 'org.springframework.ide.eclipse.core.springnature'
 
 	jacoco {
-		toolVersion = '0.8.6'
+		toolVersion = '0.8.11'
 	}
 
 	// dependencies that are common across all java projects
@@ -237,13 +238,26 @@ subprojects { subproject ->
 				}
 			}
 		}
+		repositories {
+			maven {
+				name = 'nexus'
+				url = version.endsWith('SNAPSHOT')
+					? (project.hasProperty('nexusSnapshotUrl') ? nexusSnapshotUrl : nexusReleaseUrl)
+					: (project.hasProperty('nexusReleaseUrl') ? nexusReleaseUrl : nexusSnapshotUrl)
+				allowInsecureProtocol = true
+				credentials {
+					username = nexusUsername
+					password = nexusPassword
+				}
+			}
+		}
 	}
 
 	task updateCopyrights {
-		onlyIf { gitPresent && !System.getenv('GITHUB_ACTION') && !System.getenv('bamboo_buildKey') }
-		if (gitPresent) {
-			inputs.files(modifiedFiles.filter { f -> f.path.contains(subproject.name) })
-		}
+// 		onlyIf { gitPresent && !System.getenv('GITHUB_ACTION') && !System.getenv('bamboo_buildKey') }
+// 		if (gitPresent) {
+// 			inputs.files(modifiedFiles.filter { f -> f.path.contains(subproject.name) })
+// 		}
 		outputs.dir('build')
 
 		doLast {
@@ -352,6 +366,8 @@ project ('spring-kafka-test') {
 		api "org.apache.kafka:kafka-metadata:$kafkaVersion"
 		api "org.apache.kafka:kafka-server-common:$kafkaVersion"
 		api "org.apache.kafka:kafka-server-common:$kafkaVersion:test"
+		api "org.apache.kafka:kafka-server:$kafkaVersion"
+		api "org.apache.kafka:kafka-server:$kafkaVersion:test"
 		api "org.apache.kafka:kafka-streams-test-utils:$kafkaVersion"
 		api "org.apache.kafka:kafka_$scalaVersion:$kafkaVersion"
 		api "org.apache.kafka:kafka_$scalaVersion:$kafkaVersion:test"
@@ -406,84 +422,84 @@ dependencies {
 	docs "io.spring.docresources:spring-doc-resources:${docResourcesVersion}@zip"
 }
 
-task prepareAsciidocBuild(type: Sync) {
-	dependsOn configurations.docs
-	from {
-		configurations.docs.collect { zipTree(it) }
-	}
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-	from 'spring-kafka-docs/src/main/asciidoc/','spring-kafka-docs/src/main/java','spring-kafka-docs/src/main/kotlin'
-	into "$buildDir/asciidoc"
-}
+// task prepareAsciidocBuild(type: Sync) {
+// 	dependsOn configurations.docs
+// 	from {
+// 		configurations.docs.collect { zipTree(it) }
+// 	}
+// 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+// 	from 'spring-kafka-docs/src/main/asciidoc/','spring-kafka-docs/src/main/java','spring-kafka-docs/src/main/kotlin'
+// 	into "$buildDir/asciidoc"
+// }
 
-asciidoctorPdf {
-	dependsOn prepareAsciidocBuild
-	baseDirFollowsSourceFile()
-	configurations 'asciidoctorExt'
+// asciidoctorPdf {
+// 	dependsOn prepareAsciidocBuild
+// 	baseDirFollowsSourceFile()
+// 	configurations 'asciidoctorExt'
+// 
+// 	asciidoctorj {
+// 		sourceDir "$buildDir/asciidoc"
+// 		inputs.dir(sourceDir)
+// 		sources {
+// 			include 'index.adoc'
+// 		}
+// 		options doctype: 'book'
+// 		attributes 'icons': 'font',
+// 		'sectanchors': '',
+// 		'sectnums': '',
+// 		'toc': '',
+// 		'source-highlighter' : 'coderay',
+// 		revnumber: project.version,
+// 		'project-version': project.version
+// 	}
+// }
 
-	asciidoctorj {
-		sourceDir "$buildDir/asciidoc"
-		inputs.dir(sourceDir)
-		sources {
-			include 'index.adoc'
-		}
-		options doctype: 'book'
-		attributes 'icons': 'font',
-		'sectanchors': '',
-		'sectnums': '',
-		'toc': '',
-		'source-highlighter' : 'coderay',
-		revnumber: project.version,
-		'project-version': project.version
-	}
-}
-
-asciidoctorj {
-	version = '2.4.1'
+// asciidoctorj {
+// 	version = '2.4.1'
 	// fatalWarnings ".*"
-	options doctype: 'book', eruby: 'erubis'
-	attributes([
-			icons: 'font',
-			idprefix: '',
-			idseparator: '-',
-			docinfo: 'shared',
-			revnumber: project.version,
-			sectanchors: '',
-			sectnums: '',
-			'source-highlighter': 'highlight.js',
-			highlightjsdir: 'js/highlight',
-			'highlightjs-theme': 'googlecode',
-			stylesdir: 'css/',
-			stylesheet: 'stylesheet.css',
-			'spring-version': project.version,
-			'project-version': project.version,
-			'java-examples': 'org/springframework/kafka/jdocs',
-			'kotlin-examples': 'org/springframework/kafka/kdocs'
-	])
-}
+// 	options doctype: 'book', eruby: 'erubis'
+// 	attributes([
+// 			icons: 'font',
+// 			idprefix: '',
+// 			idseparator: '-',
+// 			docinfo: 'shared',
+// 			revnumber: project.version,
+// 			sectanchors: '',
+// 			sectnums: '',
+// 			'source-highlighter': 'highlight.js',
+// 			highlightjsdir: 'js/highlight',
+// 			'highlightjs-theme': 'googlecode',
+// 			stylesdir: 'css/',
+// 			stylesheet: 'stylesheet.css',
+// 			'spring-version': project.version,
+// 			'project-version': project.version,
+// 			'java-examples': 'org/springframework/kafka/jdocs',
+// 			'kotlin-examples': 'org/springframework/kafka/kdocs'
+// 	])
+// }
 
-asciidoctor {
-	dependsOn asciidoctorPdf
-	baseDirFollowsSourceFile()
-	configurations 'asciidoctorExt'
-	sourceDir = file("$buildDir/asciidoc")
-	sources {
-		include '*.adoc'
-	}
-	resources {
-		from(sourceDir) {
-			include 'images/*', 'css/**', 'js/**'
-		}
-	}
+// asciidoctor {
+// 	dependsOn asciidoctorPdf
+// 	baseDirFollowsSourceFile()
+// 	configurations 'asciidoctorExt'
+// 	sourceDir = file("$buildDir/asciidoc")
+// 	sources {
+// 		include '*.adoc'
+// 	}
+// 	resources {
+// 		from(sourceDir) {
+// 			include 'images/*', 'css/**', 'js/**'
+// 		}
+// 	}
+// 
+// }
 
-}
+// task reference(dependsOn: asciidoctor) {
+// 	group = 'Documentation'
+// 	description = 'Generate the reference documentation'
+// }
 
-task reference(dependsOn: asciidoctor) {
-	group = 'Documentation'
-	description = 'Generate the reference documentation'
-}
-
-reference.onlyIf { "$System.env.NO_REFERENCE_TASK" != 'true' || project.hasProperty('ignoreEnvToStopReference') }
+// }
 
 task api(type: Javadoc) {
 	group = 'Documentation'
@@ -504,78 +520,78 @@ task api(type: Javadoc) {
 	destinationDir = new File(buildDir, 'api')
 }
 
-task docsZip(type: Zip, dependsOn: [reference]) {
-	group = 'Distribution'
-	archiveClassifier = 'docs'
-	description = "Builds -${archiveClassifier} archive containing api and reference " +
-			"for deployment at static.spring.io/spring-kafka/docs."
+// task docsZip(type: Zip, dependsOn: [reference]) {
+// 	group = 'Distribution'
+// 	archiveClassifier = 'docs'
+// 	description = "Builds -${archiveClassifier} archive containing api and reference " +
+// 			"for deployment at static.spring.io/spring-kafka/docs."
+// 
+// 	from('src/dist') {
+// 		include 'changelog.txt'
+// 	}
+// 
+// 	from(api) {
+// 		into 'api'
+// 	}
+// 
+// 	from ('build/docs/asciidoc') {
+// 		into 'reference/html'
+// 	}
+// 
+// 	from ('build/docs/asciidocPdf') {
+// 		include 'index.pdf'
+// 		rename 'index.pdf', 'spring-kafka-reference.pdf'
+// 		into 'reference/pdf'
+// 	}
+// }
 
-	from('src/dist') {
-		include 'changelog.txt'
-	}
-
-	from(api) {
-		into 'api'
-	}
-
-	from ('build/docs/asciidoc') {
-		into 'reference/html'
-	}
-
-	from ('build/docs/asciidocPdf') {
-		include 'index.pdf'
-		rename 'index.pdf', 'spring-kafka-reference.pdf'
-		into 'reference/pdf'
-	}
-}
-
-task distZip(type: Zip, dependsOn: [docsZip]) { //, schemaZip]) {
-	group = 'Distribution'
-	archiveClassifier = 'dist'
-	description = "Builds -${archiveClassifier} archive, containing all jars and docs, " +
-			"suitable for community download page."
-
-	ext.baseDir = "${project.name}-${project.version}"
-
-	from('src/dist') {
-		include 'readme.txt'
-		include 'license.txt'
-		include 'notice.txt'
-		into "${baseDir}"
-	}
-
-	from(zipTree(docsZip.archivePath)) {
-		into "${baseDir}/docs"
-	}
-
-	subprojects.each { subproject ->
-		into ("${baseDir}/libs") {
-			from subproject.jar
-			from subproject.sourcesJar
-			from subproject.javadocJar
-		}
-	}
-}
-
-artifacts {
-	archives distZip
-	archives docsZip
-}
-
-task dist(dependsOn: assemble) {
-	group = 'Distribution'
-	description = 'Builds -dist, -docs distribution archives.'
-}
-
-apply from: "${rootProject.projectDir}/publish-maven.gradle"
-
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			artifact docsZip
-			artifact distZip
-		}
-	}
-}
-
-apply from: "${rootDir}/gradle/docs.gradle"
+// task distZip(type: Zip, dependsOn: [docsZip]) { //, schemaZip]) {
+// 	group = 'Distribution'
+// 	archiveClassifier = 'dist'
+// 	description = "Builds -${archiveClassifier} archive, containing all jars and docs, " +
+// 			"suitable for community download page."
+// 
+// 	ext.baseDir = "${project.name}-${project.version}"
+// 
+// 	from('src/dist') {
+// 		include 'readme.txt'
+// 		include 'license.txt'
+// 		include 'notice.txt'
+// 		into "${baseDir}"
+// 	}
+// 
+// 	from(zipTree(docsZip.archivePath)) {
+// 		into "${baseDir}/docs"
+// 	}
+// 
+// 	subprojects.each { subproject ->
+// 		into ("${baseDir}/libs") {
+// 			from subproject.jar
+// 			from subproject.sourcesJar
+// 			from subproject.javadocJar
+// 		}
+// 	}
+// }
+// 
+// artifacts {
+// 	archives distZip
+// 	archives docsZip
+// }
+// 
+// task dist(dependsOn: assemble) {
+// 	group = 'Distribution'
+// 	description = 'Builds -dist, -docs distribution archives.'
+// }
+// 
+// apply from: "${rootProject.projectDir}/publish-maven.gradle"
+// 
+// publishing {
+// 	publications {
+// 		mavenJava(MavenPublication) {
+// 			artifact docsZip
+// 			artifact distZip
+// 		}
+// 	}
+// }
+// 
+// apply from: "${rootDir}/gradle/docs.gradle"

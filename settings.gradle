@@ -1,7 +1,30 @@
 pluginManagement {
 	repositories {
 		gradlePluginPortal()
-		maven { url 'https://repo.spring.io/plugins-release' }
+		mavenLocal()
+		mavenCentral()
+		// Nexus 私服仓库（Gradle 插件下载源，凭证见 ~/.gradle/gradle.properties）
+		maven {
+			name = 'nexus'
+			url = nexusPublicUrl
+			allowInsecureProtocol = true
+			credentials {
+				username = nexusUsername
+				password = nexusPassword
+			}
+		}
+		if (version.endsWith('-SNAPSHOT')) {
+			maven {
+				name = 'nexus-snapshots'
+				url = nexusSnapshotUrl
+				allowInsecureProtocol = true
+				credentials {
+					username = nexusUsername
+					password = nexusPassword
+				}
+			}
+		}
+		maven { url "https://repo.spring.io/milestone" }
 	}
 }
 

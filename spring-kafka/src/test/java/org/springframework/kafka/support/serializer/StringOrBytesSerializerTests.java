@@ -45,10 +45,10 @@ public class StringOrBytesSerializerTests {
 		Bytes bytes = Bytes.wrap("baz".getBytes());
 		out = serializer.serialize("x", bytes);
 		assertThat(out).isEqualTo("baz".getBytes());
-		assertThat(KafkaTestUtils.getPropertyValue(serializer, "stringSerializer.encoding")).isEqualTo("UTF-8");
+		assertThat(KafkaTestUtils.getPropertyValue(serializer, "stringSerializer.encoding").toString()).isEqualTo("UTF-8");
 		Map<String, Object> configs = Collections.singletonMap("serializer.encoding", "UTF-16");
 		serializer.configure(configs, false);
-		assertThat(KafkaTestUtils.getPropertyValue(serializer, "stringSerializer.encoding")).isEqualTo("UTF-16");
+		assertThat(KafkaTestUtils.getPropertyValue(serializer, "stringSerializer.encoding").toString()).isEqualTo("UTF-16");
 	}
 
 }
