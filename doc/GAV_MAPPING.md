@@ -24,16 +24,4 @@
 </dependency>
 ```
 
-在 `dependencyManagement` 中引入 BOM：
-
-```xml
-<dependency>
-    <groupId>cn.bjca.footstone.bpring.kafka</groupId>
-    <artifactId>bjca-footstone-bpring-kafka-bom</artifactId>
-    <version>2.9.13-nes.patch.1-SNAPSHOT</version>
-    <type>pom</type>
-    <scope>import</scope>
-</dependency>
-```
-
 > 下游 Java 代码中的 `import org.springframework.kafka...` 无需修改。

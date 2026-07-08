@@ -72,6 +72,14 @@ ext {
 	zookeeperVersion = '3.6.3'
 
 	idPrefix = 'kafka'
+
+	// BJCA 内部维护分支 artifactId 去特征化映射：仅作用于 Maven 发布层与 jar 名，
+	// 不改变 Gradle project.name（详见 openspec change fix-publish-artifactid）。
+	bjcaArtifactIds = [
+		'spring-kafka'      : 'bjca-footstone-bpring-kafka',
+		'spring-kafka-test' : 'bjca-footstone-bpring-kafka-test',
+		'spring-kafka-docs' : 'bjca-footstone-bpring-kafka-docs',
+	]
 }
 
 nohttp {
@@ -125,6 +133,11 @@ subprojects { subproject ->
 	apply plugin: 'checkstyle'
 	apply plugin: 'kotlin'
 	apply plugin: 'kotlin-spring'
+
+	// jar 产物名使用 BJCA 重命名坐标；archivesName 与发布 artifactId 相互独立，均需显式设置
+	base {
+		archivesName = rootProject.ext.bjcaArtifactIds[subproject.name]
+	}
 
 	java {
 		withJavadocJar()
@@ -233,6 +246,15 @@ subprojects { subproject ->
 							it.appendNode('artifactId', dep.name)
 							it.appendNode('version', dep.version)
 							it.appendNode('scope', 'provided')
+						}
+					}
+					// 模块间依赖坐标同步为 BJCA artifactId：project(':spring-kafka*') 生成的 POM
+					// 依赖默认取被依赖方 project.name，此处改写为发布用的重命名坐标，避免悬空坐标
+					def artifactIdMap = rootProject.ext.bjcaArtifactIds
+					pomDeps.'*'.each { depNode ->
+						def renamed = artifactIdMap[depNode.artifactId.text()]
+						if (renamed) {
+							depNode.artifactId.first().value = renamed
 						}
 					}
 				}

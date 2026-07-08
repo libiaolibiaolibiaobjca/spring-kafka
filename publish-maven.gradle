@@ -3,6 +3,8 @@ apply plugin: 'maven-publish'
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
+			// BJCA 发布坐标：artifactId 去特征化，独立于 Gradle project.name
+			artifactId = rootProject.ext.bjcaArtifactIds[project.name]
 			pom {
 				afterEvaluate {
 					name = project.description
