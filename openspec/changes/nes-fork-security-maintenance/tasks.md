@@ -9,20 +9,24 @@
 
 ## 1. 安全调研（阶段 1）
 
-- [ ] 1.1 用 `~/dev/dependency-check12.1.3` 对 3.3 依赖树扫描，产出候选 CVE 清单（NVD 库不可更新时记录并改用兜底方法）
-- [ ] 1.2 提取 3.3 实际依赖版本清单（Spring 6.2.19 / kafka 3.8.1 / Jackson 2.18.8 / Retry 2.0.13 / Data 2024.1.13 / ZooKeeper 3.8.6 / Micrometer 1.14.14 / Reactor 2024.0.18）
-- [ ] 1.3 以 2.9 的 23 个 CVE 为交叉核对起点，逐条按 3.3 版本重新研判状态（写明版本比对依据）
-- [ ] 1.4 补充 3.3 特有的新 CVE（Spring Framework 6.2.x / Java 17 生态公告）
+- [x] 1.1 用联网权威源（Spring Security Advisories / Apache Kafka CVE List / NVD / GitHub Advisory）逐组件精准查询（主流程 WebSearch 可用；dependency-check + NVD 库已就绪作兜底）
+- [x] 1.2 提取 3.3 实际依赖版本清单（Spring 6.2.19 / kafka 3.8.1 / Jackson 2.18.8 / Retry 2.0.13 / Data commons 3.4.13(bom 2024.1.13) / ZooKeeper 3.8.6 / Micrometer 1.14.14 / Reactor 2024.0.18）
+  - 关键事实：spring-kafka 运行时**不依赖** spring-web/webmvc/webflux/security（仅 context/messaging/tx/aop/beans/core/expression/jcl）
+- [x] 1.3 以 2.9 的 23 个 CVE 为交叉核对起点，逐条按 3.3 版本重新研判状态（写明版本比对依据）
+- [x] 1.4 补充 3.3 特有的新 CVE（Spring Framework 6.2.x / Kafka 2026 / Spring Data / Micrometer 公告）
 - [ ] 1.5 为每个 CVE 生成 `doc/CVE/CVE-XXXX-XXXXX.md`（统一模板：基本信息/描述/受影响版本/修复版本/应对措施/参考链接）
 - [ ] 1.6 生成 `doc/VULNERABILITY_REPORT.md`（元信息/6态图标说明/依赖概览/分类表/统计/免疫机制/索引）
 - [ ] 1.7 向用户汇报调研结论与状态分布，确认后再进入升级阶段
 
 ## 2. 依赖安全升级（阶段 2，TDD）
 
-- [ ] 2.1 （测试先行）确认覆盖 kafka-clients 行为的现有测试，识别升级敏感用例（EmbeddedKafkaBroker、序列化、消费/生产）
-- [ ] 2.2 修改 `build.gradle`：`kafkaVersion` 3.8.1 → 3.9.2
-- [ ] 2.3 确认 3.9.2 依赖从本地 `~/.m2` 私服解析成功
-- [ ] 2.4 运行全量测试，与 0.5 基线对比，确保无回归；失败则定位兼容性问题
+- [x] 2.1 （测试先行）确认覆盖 kafka-clients 行为的现有测试，识别升级敏感用例（EmbeddedKafkaBroker、序列化、消费/生产）
+  - 发现 KIP-1033 敏感点：RecoveringDeserializationExceptionHandlerTests
+- [x] 2.2 修改 `build.gradle`：`kafkaVersion` 3.8.1 → 3.9.2
+- [x] 2.3 确认 3.9.2 依赖从本地 `~/.m2` 私服解析成功（含 broker 端 kafka_2.13/kafka-server 等全部坐标）
+- [x] 2.4 运行全量测试，与 0.5 基线对比，确保无回归；失败则定位兼容性问题
+  - 已修复 KIP-1033 编译歧义（方案A：测试代码 7 处 `handle((ProcessorContext) null,...)` 显式转型 + 补 import，生产代码零改动）
+  - **升级后回归：998 用例 / 991 通过 / 7 跳过 / 0 失败，与基线逐项一致，零回归**；`BUILD SUCCESSFUL in 16m49s`
 - [ ] 2.5 更新 VULNERABILITY_REPORT 中因升级而转为「✅已修复」的 kafka CVE 状态
 
 ## 3. GAV 去特征化（阶段 3）
