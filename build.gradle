@@ -2,6 +2,16 @@ buildscript {
 	ext.kotlinVersion = '1.9.25'
 	ext.isCI = System.getenv('GITHUB_ACTION')
 	repositories {
+		// NES fork: 内网 Nexus 私服优先（引用 ~/.gradle/gradle.properties 全局属性）
+		maven {
+			name = 'nexus'
+			url = nexusPublicUrl
+			allowInsecureProtocol = true
+			credentials {
+				username = nexusUsername
+				password = nexusPassword
+			}
+		}
 		gradlePluginPortal()
 		mavenCentral()
 		if (version.endsWith('SNAPSHOT')) {
@@ -90,6 +100,16 @@ allprojects {
 	apply plugin: 'io.spring.dependency-management'
 
 	repositories {
+		// NES fork: 内网 Nexus 私服优先（引用 ~/.gradle/gradle.properties 全局属性）
+		maven {
+			name = 'nexus'
+			url = nexusPublicUrl
+			allowInsecureProtocol = true
+			credentials {
+				username = nexusUsername
+				password = nexusPassword
+			}
+		}
 		mavenCentral()
 		maven { url 'https://repo.spring.io/milestone' }
 		if (version.endsWith('SNAPSHOT')) {

@@ -1,5 +1,15 @@
 pluginManagement {
 	repositories {
+		// NES fork: 内网 Nexus 私服优先（引用 ~/.gradle/gradle.properties 中的全局属性），加速插件下载
+		maven {
+			name = 'nexus'
+			url = nexusPublicUrl
+			allowInsecureProtocol = true
+			credentials {
+				username = nexusUsername
+				password = nexusPassword
+			}
+		}
 		gradlePluginPortal()
 		mavenCentral()
 	}
