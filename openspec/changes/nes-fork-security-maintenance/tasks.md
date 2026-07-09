@@ -46,7 +46,7 @@
 - [x] 4.1 确认 Nexus 私服地址与凭证来源（`~/.gradle/gradle.properties` 已含 nexusPublicUrl/ReleaseUrl/SnapshotUrl/Username/Password）
 - [x] 4.2 `gradle/publish-maven.gradle` 配置 Nexus 发布仓库（按版本自动选 snapshot/release）
 - [x] 4.3 确认凭证从 `~/.gradle/gradle.properties` 全局属性读取，脚本中无明文
-- [~] 4.4 发布任务验证：`publishAllPublicationsToNexusRepository` 任务已生成、dry-run 通过；**实际推送私服待用户确认执行**
+- [x] 4.4 发布任务验证：`make deploy`（`publishAllPublicationsToNexusRepository`）执行成功；私服快照仓库 3 个模块 maven-metadata.xml 均返回 HTTP 200，制品确认到达 Nexus
 
 ## 5. 文档与交付（阶段 5）
 
