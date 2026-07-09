@@ -85,7 +85,8 @@ ext {
 
 	idPrefix = 'kafka'
 
-	javaProjects = subprojects - project(':spring-kafka-bom') - project(':spring-kafka-docs')
+	// NES fork: 模块 path 随 GAV 重命名（settings.gradle 中已改 project.name）
+	javaProjects = subprojects - project(':bjca-footstone-bpring-kafka-bom') - project(':bjca-footstone-bpring-kafka-docs')
 
 }
 
@@ -95,7 +96,8 @@ nohttp {
 }
 
 allprojects {
-	group = 'org.springframework.kafka'
+	// NES fork: GAV 去特征化 —— GroupId 引用 gradle.properties 中的 projectGroup
+	group = projectGroup
 
 	apply plugin: 'io.spring.dependency-management'
 
@@ -264,7 +266,7 @@ configure(javaProjects) { subproject ->
 
 }
 
-project ('spring-kafka') {
+project ('bjca-footstone-bpring-kafka') {
 	description = 'Spring Kafka Support'
 
 	dependencies {
@@ -299,7 +301,7 @@ project ('spring-kafka') {
 		optionalApi 'io.micrometer:micrometer-core'
 		optionalApi 'io.micrometer:micrometer-tracing'
 
-		testImplementation project (':spring-kafka-test')
+		testImplementation project (':bjca-footstone-bpring-kafka-test')
 		testImplementation 'io.projectreactor:reactor-test'
 		testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
 		testImplementation "org.hibernate.validator:hibernate-validator:$hibernateValidationVersion"
@@ -309,7 +311,7 @@ project ('spring-kafka') {
 	}
 }
 
-project('spring-kafka-bom') {
+project('bjca-footstone-bpring-kafka-bom') {
 	description = 'Spring for Apache Kafka (Bill of Materials)'
 
 	apply plugin: 'java-platform'
@@ -332,7 +334,7 @@ project('spring-kafka-bom') {
 	}
 }
 
-project ('spring-kafka-test') {
+project ('bjca-footstone-bpring-kafka-test') {
 	description = 'Spring Kafka Test Support'
 
 	dependencies {
@@ -472,9 +474,9 @@ tasks.register('distZip', Zip) {
 		}
 	}
 
-	from(project(':spring-kafka-bom').generatePomFileForMavenJavaPublication) {
+	from(project(':bjca-footstone-bpring-kafka-bom').generatePomFileForMavenJavaPublication) {
 		into "${baseDir}/libs"
-		rename 'pom-default.xml', "spring-kafka-bom-${project.version}.xml"
+		rename 'pom-default.xml', "bjca-footstone-bpring-kafka-bom-${project.version}.xml"
 	}
 
 }

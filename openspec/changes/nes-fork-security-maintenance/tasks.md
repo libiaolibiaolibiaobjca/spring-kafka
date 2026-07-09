@@ -33,12 +33,13 @@
 
 ## 3. GAV 去特征化（阶段 3）
 
-- [ ] 3.1 `gradle.properties`：新增 `projectGroup=cn.bjca.footstone.bpring.kafka`，`version` 改为 `3.3.16-nes.patch.1-SNAPSHOT`，记录基线 `springKafkaVersion=3.3.16`
-- [ ] 3.2 `build.gradle`：定义 `bjcaArtifactIds` 映射（含 `spring-kafka-bom`→`bjca-footstone-bpring-kafka-bom`），`group = projectGroup`，`archivesName` 按映射改写
-- [ ] 3.3 处理 `spring-kafka-bom/build.gradle`：BOM 坐标重命名 + 内部各模块 `<dependency>` 引用同步改为新 GAV
-- [ ] 3.4 校验 pom 生成逻辑（manifest `Implementation-Vendor-Id`、pom-default.xml 的 groupId/artifactId）
-- [ ] 3.5 执行 `publishToMavenLocal`，验证本地仓库出现 `cn/bjca/footstone/bpring/kafka/*` 制品与正确 BOM
-- [ ] 3.6 确认 Java import 无需变更（抽查测试类）
+- [x] 3.1 `gradle.properties`：新增 `projectGroup=cn.bjca.footstone.bpring.kafka`，`version` 改为 `3.3.16-nes.patch.1-SNAPSHOT`，记录基线 `springKafkaVersion=3.3.16`
+- [x] 3.2 `settings.gradle`：改 4 个模块 `project.name`（前缀 spring-kafka → bjca-footstone-bpring-kafka）；`build.gradle` `group = projectGroup`
+  - 采用 project.name 改名法（BOM 的 `api it` 自动跟随新坐标）；同步修正 build.gradle 6 处 + docs 1 处按 path 的 project 引用
+- [x] 3.3 处理 `spring-kafka-bom`（内联于根 build.gradle 的 java-platform）：BOM 内部各模块坐标经 project.name 改名自动跟随，无需 withXml
+- [x] 3.4 校验 pom 生成逻辑：主模块自身坐标为新 GAV，依赖坐标（kafka-clients 3.9.2/spring-retry）保持原始上游坐标
+- [x] 3.5 执行 `publishToMavenLocal`，验证本地仓库 `cn/bjca/footstone/bpring/kafka/*` 制品与正确 BOM constraints
+- [x] 3.6 确认 Java import 无需变更（仅改坐标与 project.name，包名 org.springframework.kafka 不变）
 
 ## 4. Nexus 私服（阶段 4）
 

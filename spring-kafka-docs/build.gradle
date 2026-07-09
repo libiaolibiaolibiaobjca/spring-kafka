@@ -28,7 +28,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask).configur
 
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter:$springBootVersion"
-    implementation project (':spring-kafka')
+    implementation project (':bjca-footstone-bpring-kafka')
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
     implementation 'com.fasterxml.jackson.core:jackson-core'
     implementation 'com.fasterxml.jackson.core:jackson-databind'

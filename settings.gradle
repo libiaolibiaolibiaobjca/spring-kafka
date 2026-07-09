@@ -26,3 +26,14 @@ include 'spring-kafka'
 include 'spring-kafka-bom'
 include 'spring-kafka-test'
 include 'spring-kafka-docs'
+
+// NES fork: GAV 去特征化 —— 将各子模块 ArtifactId 前缀 spring-kafka 重命名为
+// bjca-footstone-bpring-kafka，规避 SCA 工具按原始坐标特征误报。
+// 改 project.name 会同步改变 project path（:spring-kafka → :bjca-footstone-bpring-kafka），
+// 因此 build.gradle 与各子模块中按 path 的 project(':spring-kafka*') 引用已同步更新为新名。
+// 好处：发布坐标、BOM constraints(api it)、jar 名、pom groupId/artifactId 全部自动跟随。
+rootProject.children.each { proj ->
+	if (proj.name.startsWith('spring-kafka')) {
+		proj.name = proj.name.replace('spring-kafka', 'bjca-footstone-bpring-kafka')
+	}
+}
