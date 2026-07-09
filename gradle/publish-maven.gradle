@@ -60,4 +60,17 @@ publishing {
 			}
 		}
 	}
+	// NES fork: 配置 Nexus 私服作为发布目标，凭证引用 ~/.gradle/gradle.properties 全局属性（不入库）。
+	// 根据版本号自动选择目标仓库：SNAPSHOT → 快照仓库，Release → 正式仓库。
+	repositories {
+		maven {
+			name = 'nexus'
+			url = project.version.toString().endsWith('-SNAPSHOT') ? nexusSnapshotUrl : nexusReleaseUrl
+			allowInsecureProtocol = true
+			credentials {
+				username = nexusUsername
+				password = nexusPassword
+			}
+		}
+	}
 }

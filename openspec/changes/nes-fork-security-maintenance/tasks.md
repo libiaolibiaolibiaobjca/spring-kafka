@@ -43,20 +43,20 @@
 
 ## 4. Nexus 私服（阶段 4）
 
-- [ ] 4.1 向用户获取 Nexus 私服地址与凭证来源（或确认 `~/.m2/settings.xml` 已含）
-- [ ] 4.2 `settings.gradle` + `build.gradle` 配置私服仓库（依赖解析 + 发布 snapshot/release）
-- [ ] 4.3 确认凭证从外部配置读取，脚本中无明文
-- [ ] 4.4 执行发布任务验证制品成功推送到私服（用户确认后执行）
+- [x] 4.1 确认 Nexus 私服地址与凭证来源（`~/.gradle/gradle.properties` 已含 nexusPublicUrl/ReleaseUrl/SnapshotUrl/Username/Password）
+- [x] 4.2 `gradle/publish-maven.gradle` 配置 Nexus 发布仓库（按版本自动选 snapshot/release）
+- [x] 4.3 确认凭证从 `~/.gradle/gradle.properties` 全局属性读取，脚本中无明文
+- [~] 4.4 发布任务验证：`publishAllPublicationsToNexusRepository` 任务已生成、dry-run 通过；**实际推送私服待用户确认执行**
 
 ## 5. 文档与交付（阶段 5）
 
-- [ ] 5.1 `doc/GAV_MAPPING.md`：GroupId/Version 规则 + 各模块 ArtifactId 映射（含 bom）+ 下游 XML 示例
-- [ ] 5.2 `doc/NEXUS_DEPLOY.md`：私服配置、凭证来源、发布命令
-- [ ] 5.3 `doc/REQUIREMENTS.md`：基线版本、依赖版本清单、环境需求（Java 17 / Gradle 8.14.5）
-- [ ] 5.4 `doc/USER_MANUAL.md`：构建/测试/安装/依赖引用说明
-- [ ] 5.5 `doc/QUICK_START.md`：最小上手步骤
-- [ ] 5.6 `Makefile`：setup-gradle / build / test / install / deploy 目标
-- [ ] 5.7 全部文档交叉校验版本号、GAV、CVE 索引链接一致性
+- [x] 5.1 `doc/GAV_MAPPING.md`：GroupId/Version 规则 + 各模块 ArtifactId 映射（含 bom）+ 下游 XML 示例
+- [x] 5.2 `doc/NEXUS_DEPLOY.md`：私服配置、凭证来源、发布命令
+- [x] 5.3 `doc/REQUIREMENTS.md`：基线版本、依赖版本清单、环境需求（Java 17 / Gradle 8.14.5）
+- [x] 5.4 `doc/USER_MANUAL.md`：构建/测试/安装/依赖引用说明
+- [x] 5.5 `doc/QUICK_START.md`：最小上手步骤
+- [x] 5.6 `Makefile`：setup-gradle / build / test / install / deploy 目标（已实测 help/projects）
+- [x] 5.7 全部文档交叉校验版本号、GAV、CVE 索引链接一致性（无死链，版本号一致）
 
 ## 6. 收尾验证
 
