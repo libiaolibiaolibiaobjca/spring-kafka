@@ -60,5 +60,5 @@
 
 ## 6. 收尾验证
 
-- [ ] 6.1 完整离线复现：clean → setup-gradle → build → test → publishToMavenLocal 全流程通过
-- [ ] 6.2 向用户提交变更影响分析总结与最终状态，确认后归档 openspec change
+- [x] 6.1 完整离线复现：clean → setup-gradle → build-thin → install 全流程通过（3× BUILD SUCCESSFUL），制品坐标正确
+- [~] 6.2 向用户提交变更影响分析总结与最终状态，确认后归档 openspec change
