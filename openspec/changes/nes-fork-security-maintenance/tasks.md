@@ -14,8 +14,10 @@
   - 关键事实：spring-kafka 运行时**不依赖** spring-web/webmvc/webflux/security（仅 context/messaging/tx/aop/beans/core/expression/jcl）
 - [x] 1.3 以 2.9 的 23 个 CVE 为交叉核对起点，逐条按 3.3 版本重新研判状态（写明版本比对依据）
 - [x] 1.4 补充 3.3 特有的新 CVE（Spring Framework 6.2.x / Kafka 2026 / Spring Data / Micrometer 公告）
-- [ ] 1.5 为每个 CVE 生成 `doc/CVE/CVE-XXXX-XXXXX.md`（统一模板：基本信息/描述/受影响版本/修复版本/应对措施/参考链接）
-- [ ] 1.6 生成 `doc/VULNERABILITY_REPORT.md`（元信息/6态图标说明/依赖概览/分类表/统计/免疫机制/索引）
+- [x] 1.5 为每个 CVE 生成 `doc/CVE/CVE-XXXX-XXXXX.md`（统一模板：基本信息/描述/受影响版本/修复版本/应对措施/参考链接）
+  - 生成 27 个 CVE 独立文档，报告索引与文件完全一致、无悬空链接
+- [x] 1.6 生成 `doc/VULNERABILITY_REPORT.md`（元信息/6态图标说明/依赖概览/分类表/统计/免疫机制/索引）
+  - 27 条：✅已修复 16 / ⬜免疫 3 / ❌不适用 8 / 🔧⚠️⏸️ 0
 - [ ] 1.7 向用户汇报调研结论与状态分布，确认后再进入升级阶段
 
 ## 2. 依赖安全升级（阶段 2，TDD）
