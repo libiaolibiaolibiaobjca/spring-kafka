@@ -321,6 +321,57 @@ public class DefaultKafkaHeaderMapperTests {
 				.containsKey("baz");
 	}
 
+	@Test
+	void subpackagesOfDefaultTrustedPackagesAreNotTrustedTransitively() {
+		DefaultKafkaHeaderMapper mapper = new DefaultKafkaHeaderMapper();
+
+		assertThat(mapper.trusted("java.lang.String")).isTrue();
+		assertThat(mapper.trusted("java.net.URI")).isTrue();
+		assertThat(mapper.trusted("java.util.HashMap")).isTrue();
+		assertThat(mapper.trusted("java.lang.reflect.Method")).isFalse();
+		assertThat(mapper.trusted("java.util.concurrent.ForkJoinPool")).isFalse();
+		assertThat(mapper.trusted("java.util.logging.FileHandler")).isFalse();
+	}
+
+	@Test
+	void untrustedSubpackageTypeIsNotDeserializedFromHeader() {
+		DefaultKafkaHeaderMapper mapper = new DefaultKafkaHeaderMapper();
+		Headers kafkaHeaders = new RecordHeaders();
+		kafkaHeaders.add(new RecordHeader(DefaultKafkaHeaderMapper.JSON_TYPES,
+				"{\"dangerous\":\"java.util.logging.FileHandler\"}".getBytes(StandardCharsets.UTF_8)));
+		kafkaHeaders.add(new RecordHeader("dangerous", "{}".getBytes(StandardCharsets.UTF_8)));
+		Map<String, Object> mappedHeaders = new HashMap<>();
+
+		mapper.toHeaders(kafkaHeaders, mappedHeaders);
+
+		assertThat(mappedHeaders.get("dangerous")).isInstanceOf(NonTrustedHeaderType.class);
+		NonTrustedHeaderType header = (NonTrustedHeaderType) mappedHeaders.get("dangerous");
+		assertThat(header.getUntrustedType()).isEqualTo("java.util.logging.FileHandler");
+		assertThat(header.getHeaderValue()).isEqualTo("{}".getBytes(StandardCharsets.UTF_8));
+	}
+
+	@Test
+	void userAddedSubpackagesMustBeTrustedExplicitly() {
+		DefaultKafkaHeaderMapper mapper = new DefaultKafkaHeaderMapper();
+		mapper.addTrustedPackages("com.example");
+
+		assertThat(mapper.trusted("com.example.OrderEvent")).isTrue();
+		assertThat(mapper.trusted("com.example.events.OrderEvent")).isFalse();
+
+		mapper.addTrustedPackages("com.example.events");
+
+		assertThat(mapper.trusted("com.example.events.OrderEvent")).isTrue();
+	}
+
+	@Test
+	void wildcardStillTrustsAllPackages() {
+		DefaultKafkaHeaderMapper mapper = new DefaultKafkaHeaderMapper();
+		mapper.addTrustedPackages("*");
+
+		assertThat(mapper.trusted("com.example.events.OrderEvent")).isTrue();
+		assertThat(mapper.trusted("java.util.logging.FileHandler")).isTrue();
+	}
+
 	public static final class Foo {
 
 		private String bar = "bar";

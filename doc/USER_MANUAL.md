@@ -41,7 +41,36 @@
 2. **无需修改** Java 源代码中的 `import` 语句
 3. 确认 `dependencyManagement` 中 BOM 版本一致
 
-## 5. 相关文档
+## 5. Kafka Header 反序列化安全配置
+
+`2.9.13-nes.patch.1` 已回移 CVE-2026-41731 修复。`DefaultKafkaHeaderMapper` 的受信包配置现在采用**精确包名匹配**，父包不再自动信任子包。
+
+例如，仅添加 `com.example`：
+
+```java
+DefaultKafkaHeaderMapper mapper = new DefaultKafkaHeaderMapper();
+mapper.addTrustedPackages("com.example");
+```
+
+只会信任直接声明在 `com.example` 包中的类型，不会信任 `com.example.events.OrderEvent`。需要使用子包类型时应显式配置：
+
+```java
+mapper.addTrustedPackages(
+		"com.example",
+		"com.example.events",
+		"com.example.shared");
+```
+
+注意事项：
+
+1. 升级前检查所有 `addTrustedPackages` 调用和自定义 Header Mapper 配置。
+2. 收到 `NonTrustedHeaderType` 时，确认类型所属的准确包名并按最小范围加入。
+3. 避免配置 `addTrustedPackages("*")`；该配置会显式信任所有类型，只适用于 Producer 和 Topic 写入权限完全可信的环境。
+4. 使用 Kafka ACL 限制能够向消费 Topic 写入消息的 Producer。
+
+漏洞分析及验证方式参见 [CVE-2026-41731](CVE/CVE-2026-41731.md)。
+
+## 6. 相关文档
 
 - [快速入门](QUICK_START.md)
 - [Nexus 发布配置](NEXUS_DEPLOY.md)
