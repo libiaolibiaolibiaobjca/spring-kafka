@@ -16,7 +16,7 @@
 | 上游基线 | Spring for Apache Kafka **3.3.16** |
 | 项目分支 | `3.3.x-bjca-patch` |
 | 制品 GroupId | `cn.bjca.footstone.bpring.kafka` |
-| 制品版本 | `3.3.16-nes.patch.1-SNAPSHOT` |
+| 制品版本 | `3.3.16-nes.patch.1` |
 
 ## 环境需求
 

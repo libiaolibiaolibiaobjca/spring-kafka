@@ -3,7 +3,7 @@
 ## 一、项目简介
 
 本项目是 Spring for Apache Kafka **3.3.16** 的 BJCA 内部安全维护 fork，位于分支
-`3.3.x-bjca-patch`，制品坐标 `cn.bjca.footstone.bpring.kafka:bjca-footstone-bpring-kafka:3.3.16-nes.patch.1-SNAPSHOT`。
+`3.3.x-bjca-patch`，制品坐标 `cn.bjca.footstone.bpring.kafka:bjca-footstone-bpring-kafka:3.3.16-nes.patch.1`。
 
 与官方版本的差异：
 - **安全升级**：kafka-clients 由 3.8.1 升级到 3.9.2（修复 5 个 CVE）
@@ -74,7 +74,7 @@ make deploy
 ### Gradle
 
 ```groovy
-implementation 'cn.bjca.footstone.bpring.kafka:bjca-footstone-bpring-kafka:3.3.16-nes.patch.1-SNAPSHOT'
+implementation 'cn.bjca.footstone.bpring.kafka:bjca-footstone-bpring-kafka:3.3.16-nes.patch.1'
 ```
 
 ### Maven
@@ -83,7 +83,7 @@ implementation 'cn.bjca.footstone.bpring.kafka:bjca-footstone-bpring-kafka:3.3.1
 <dependency>
     <groupId>cn.bjca.footstone.bpring.kafka</groupId>
     <artifactId>bjca-footstone-bpring-kafka</artifactId>
-    <version>3.3.16-nes.patch.1-SNAPSHOT</version>
+    <version>3.3.16-nes.patch.1</version>
 </dependency>
 ```
 

@@ -4,7 +4,7 @@
 
 - **GroupId**: `org.springframework.kafka` → `cn.bjca.footstone.bpring.kafka`
 - **ArtifactId**: `spring-kafka*` → `bjca-footstone-bpring-kafka*`
-- **Version**: `3.3.17-SNAPSHOT` → `3.3.16-nes.patch.1-SNAPSHOT`（基线 Spring for Apache Kafka 3.3.16）
+- **Version**: `3.3.17-SNAPSHOT` → `3.3.16-nes.patch.1`（基线 Spring for Apache Kafka 3.3.16）
 
 ## 模块映射
 
@@ -32,7 +32,7 @@ BOM 的 `constraints`、jar 名、pom 的 groupId/artifactId 全部自动跟随�
 <dependency>
     <groupId>cn.bjca.footstone.bpring.kafka</groupId>
     <artifactId>bjca-footstone-bpring-kafka</artifactId>
-    <version>3.3.16-nes.patch.1-SNAPSHOT</version>
+    <version>3.3.16-nes.patch.1</version>
 </dependency>
 ```
 
@@ -44,7 +44,7 @@ BOM 的 `constraints`、jar 名、pom 的 groupId/artifactId 全部自动跟随�
         <dependency>
             <groupId>cn.bjca.footstone.bpring.kafka</groupId>
             <artifactId>bjca-footstone-bpring-kafka-bom</artifactId>
-            <version>3.3.16-nes.patch.1-SNAPSHOT</version>
+            <version>3.3.16-nes.patch.1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>

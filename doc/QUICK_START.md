@@ -27,7 +27,7 @@ make install
 <dependency>
     <groupId>cn.bjca.footstone.bpring.kafka</groupId>
     <artifactId>bjca-footstone-bpring-kafka</artifactId>
-    <version>3.3.16-nes.patch.1-SNAPSHOT</version>
+    <version>3.3.16-nes.patch.1</version>
 </dependency>
 ```
 
