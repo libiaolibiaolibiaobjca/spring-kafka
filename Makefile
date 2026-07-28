@@ -68,11 +68,11 @@ build: clean setup-gradle
 
 # 发布到本地 Maven 仓库，供同机其他项目依赖调试（跳过测试以加快速度）
 install: setup-gradle
-	$(JAVA_INIT) ./gradlew clean publishToMavenLocal -x test
+	$(JAVA_INIT) ./gradlew publishToMavenLocal -x test
 
 # 发布到 Nexus 私服
 deploy: setup-gradle
-	$(JAVA_INIT) ./gradlew clean publishAllPublicationsToNexusRepository -x test -x :spring-kafka-docs:publishMavenJavaPublicationToNexusRepository
+	$(JAVA_INIT) ./gradlew publishAllPublicationsToNexusRepository -x test -x :spring-kafka-docs:publishMavenJavaPublicationToNexusRepository
 
 stop:
 	$(JAVA_INIT) ./gradlew --stop

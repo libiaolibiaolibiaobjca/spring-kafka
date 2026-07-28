@@ -10,7 +10,7 @@ Spring Kafka 2.9.13 维护分支——Nexus 私服发布配置、GAV 去特征�
 |------|------|
 | **基础版本** | Spring Kafka 2.9.13（upstream 2.9.x） |
 | **工作分支** | `2.9.x-bjca-patch` |
-| **版本号** | `2.9.13-nes.patch.1-SNAPSHOT` |
+| **版本号** | `2.9.13-nes.patch.1` |
 | **Group** | `cn.bjca.footstone.bpring.kafka` |
 | **kafka-clients** | `3.9.2`（原 3.2.3） |
 
@@ -38,7 +38,7 @@ Spring Kafka 2.9.13 维护分支——Nexus 私服发布配置、GAV 去特征�
 |------|--------|--------|
 | GroupId | `org.springframework.kafka` | `cn.bjca.footstone.bpring.kafka` |
 | ArtifactId | `spring-kafka-*` | `bjca-footstone-bpring-kafka-*` |
-| Version | `2.9.14-SNAPSHOT` | `2.9.13-nes.patch.1-SNAPSHOT` |
+| Version | `2.9.14-SNAPSHOT` | `2.9.13-nes.patch.1` |
 
 ### 4. Nexus 私服配置
 

@@ -12,7 +12,7 @@
 
 | 项 | 值 |
 |---|---|
-| 发布版本 | `2.9.13-nes.patch.1-SNAPSHOT` |
+| 发布版本 | `2.9.13-nes.patch.1` |
 | GroupId | `cn.bjca.footstone.bpring.kafka` |
 | 运行时展示版本 | `2.9.13`（`gradle.properties` 的 `springKafkaVersion`） |
 | kafka-clients | `3.9.2` |

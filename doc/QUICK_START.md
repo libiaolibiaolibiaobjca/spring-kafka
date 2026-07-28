@@ -36,7 +36,7 @@ make deploy
 <dependency>
     <groupId>cn.bjca.footstone.bpring.kafka</groupId>
     <artifactId>bjca-footstone-bpring-kafka</artifactId>
-    <version>2.9.13-nes.patch.1-SNAPSHOT</version>
+    <version>2.9.13-nes.patch.1</version>
 </dependency>
 ```
 
@@ -46,7 +46,7 @@ make deploy
 <dependency>
     <groupId>cn.bjca.footstone.bpring.kafka</groupId>
     <artifactId>bjca-footstone-bpring-kafka-bom</artifactId>
-    <version>2.9.13-nes.patch.1-SNAPSHOT</version>
+    <version>2.9.13-nes.patch.1</version>
     <type>pom</type>
     <scope>import</scope>
 </dependency>

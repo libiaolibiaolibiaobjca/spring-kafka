@@ -4,7 +4,7 @@
 
 - **GroupId**: `org.springframework.kafka` → `cn.bjca.footstone.bpring.kafka`
 - **ArtifactId**: `spring-kafka` → `bjca-footstone-bpring-kafka`
-- **Version**: `2.9.14-SNAPSHOT` → `2.9.13-nes.patch.1-SNAPSHOT`
+- **Version**: `2.9.14-SNAPSHOT` → `2.9.13-nes.patch.1`
 
 ## 模块映射
 
@@ -20,7 +20,7 @@
 <dependency>
     <groupId>cn.bjca.footstone.bpring.kafka</groupId>
     <artifactId>bjca-footstone-bpring-kafka</artifactId>
-    <version>2.9.13-nes.patch.1-SNAPSHOT</version>
+    <version>2.9.13-nes.patch.1</version>
 </dependency>
 ```
 
