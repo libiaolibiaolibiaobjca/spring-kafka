@@ -4,7 +4,7 @@
 
 - **GroupId**: `org.springframework.kafka` → `cn.bjca.footstone.bpring.kafka`
 - **ArtifactId**: `spring-kafka` → `bjca-footstone-bpring-kafka`
-- **Version**: `2.9.14-SNAPSHOT` → `2.9.13-nes.patch.1`
+- **Version**: `2.9.14-SNAPSHOT` → `2.9.13-nes.patch.1`（已 RELEASE）→ 当前开发 `2.9.13-nes.patch.2-SNAPSHOT`
 
 ## 模块映射
 
@@ -14,13 +14,23 @@
 | spring-kafka-test | bjca-footstone-bpring-kafka-test |
 | spring-kafka-docs | bjca-footstone-bpring-kafka-docs |
 
+## 直接依赖：Spring Retry NES
+
+| 用途 | 原始 GAV | 当前 NES GAV |
+| :--- | :--- | :--- |
+| compile/api | `org.springframework.retry:spring-retry:1.3.4` | `cn.bjca.footstone.bpring.retry:bjca-footstone-bpring-retry:1.3.4-nes.patch.1-SNAPSHOT` |
+
+> Java import 仍为 `org.springframework.retry.*` / `org.springframework.classify.*`，无需改代码。  
+> SNAPSHOT 含 CVE-2026-41710 源码修复；retry 正式 RELEASE 发布后应切换到非 SNAPSHOT 坐标。  
+> 传递的 NES Spring Framework 在本仓 `build.gradle` 中已 exclude，编译仍使用官方 `org.springframework:*`。
+
 ## 下游依赖示例
 
 ```xml
 <dependency>
     <groupId>cn.bjca.footstone.bpring.kafka</groupId>
     <artifactId>bjca-footstone-bpring-kafka</artifactId>
-    <version>2.9.13-nes.patch.1</version>
+    <version>2.9.13-nes.patch.2-SNAPSHOT</version>
 </dependency>
 ```
 

@@ -52,6 +52,5 @@
 - **AND** 给出显式添加业务子包的配置示例
 
 #### Scenario: 构建安全修复制品
-- **WHEN** 构建尚未 RELEASE 的 `2.9.13-nes.patch.1-SNAPSHOT`
+- **WHEN** 构建 `2.9.13-nes.patch.1` 及之后的开发线（含当前 `2.9.13-nes.patch.2-SNAPSHOT`）
 - **THEN** 产物包含 CVE-2026-41731 修复
-- **AND** 不因未发布的 SNAPSHOT 变更额外提升 patch 序号
