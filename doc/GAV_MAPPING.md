@@ -24,6 +24,17 @@
 > SNAPSHOT 含 CVE-2026-41710 源码修复；retry 正式 RELEASE 发布后应切换到非 SNAPSHOT 坐标。  
 > 传递的 NES Spring Framework 在本仓 `build.gradle` 中已 exclude，编译仍使用官方 `org.springframework:*`。
 
+## 直接依赖：Spring Data Commons NES
+
+| 用途 | 原始 GAV | 当前 NES GAV |
+| :--- | :--- | :--- |
+| BOM import | `org.springframework.data:spring-data-bom:2021.2.17` | `cn.bjca.footstone.bpring.data:bjca-footstone-bpring-data-bom:2021.2.18-nes.patch.2-SNAPSHOT` |
+| optionalApi | `org.springframework.data:spring-data-commons`（由官方 BOM 管理） | `cn.bjca.footstone.bpring.data:bjca-footstone-bpring-data-commons:2.7.18-nes.patch.1` |
+
+> Java import 仍为 `org.springframework.data.*`，`ProjectingMessageConverter` 无需改代码。  
+> data-commons 本身为 NES RELEASE；BOM 为 patch.2 SNAPSHOT（其中 Elasticsearch 条目本仓不引用）。  
+> 传递的 NES Spring Framework 在本仓 `build.gradle` 中已 exclude。本仓**不**引入 NES Elasticsearch / Parsson / Security。
+
 ## 下游依赖示例
 
 ```xml

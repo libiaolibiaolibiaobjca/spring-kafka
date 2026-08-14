@@ -66,7 +66,12 @@ ext {
 	reactorVersion = '2020.0.37'
 	scalaVersion = '2.13'
 	springBootVersion = '2.7.16' // docs module
-	springDataVersion = '2021.2.17'
+	// Spring Data NES BOM：commons 为 2.7.18-nes.patch.1 RELEASE；BOM 自身为 patch.2 SNAPSHOT（含 SDE，本仓不引用）
+	springDataBomGroup = 'cn.bjca.footstone.bpring.data'
+	springDataBomArtifact = 'bjca-footstone-bpring-data-bom'
+	springDataVersion = '2021.2.18-nes.patch.2-SNAPSHOT'
+	springDataCommonsGroup = 'cn.bjca.footstone.bpring.data'
+	springDataCommonsArtifact = 'bjca-footstone-bpring-data-commons'
 	// Spring Retry NES SNAPSHOT：含 CVE-2026-41710 源码修复；正式 RELEASE 未发布前暂用 SNAPSHOT
 	springRetryGroup = 'cn.bjca.footstone.bpring.retry'
 	springRetryArtifact = 'bjca-footstone-bpring-retry'
@@ -110,7 +115,7 @@ allprojects {
 			mavenBom "org.junit:junit-bom:$junitJupiterVersion"
 			mavenBom "org.springframework:spring-framework-bom:$springVersion"
 			mavenBom "io.projectreactor:reactor-bom:$reactorVersion"
-			mavenBom "org.springframework.data:spring-data-bom:$springDataVersion"
+			mavenBom "$springDataBomGroup:$springDataBomArtifact:$springDataVersion"
 		}
 	}
 
@@ -121,7 +126,7 @@ allprojects {
 		if (version.endsWith('SNAPSHOT')) {
 			maven { url 'https://repo.spring.io/snapshot' }
 		}
-		// Nexus：解析 NES SNAPSHOT（如 spring-retry）与私服制品
+		// Nexus：解析 NES SNAPSHOT（如 spring-retry、NES Data BOM）与私服制品
 		maven {
 			name = 'nexus'
 			url = nexusPublicUrl
@@ -377,8 +382,10 @@ project ('spring-kafka') {
 			exclude group: 'org.jetbrains.kotlin'
 		}
 
-		// Spring Data projection message binding support
-		optionalApi ("org.springframework.data:spring-data-commons") {
+		// Spring Data projection message binding support（NES data-commons；版本由 NES Data BOM 管理）
+		optionalApi ("$springDataCommonsGroup:$springDataCommonsArtifact") {
+			// NES commons 默认传递 NES Spring Framework；本仓编译仍用官方 spring-*，排除避免双坐标
+			exclude group: 'cn.bjca.footstone.bpring'
 			exclude group: 'org.springframework'
 		}
 		optionalApi "com.jayway.jsonpath:json-path:$jaywayJsonPathVersion"

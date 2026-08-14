@@ -4,7 +4,7 @@
 
 本项目基于 Spring Kafka 2.9.x 维护分支（`2.9.x-bjca-patch`），配置了 Nexus 私服作为依赖下载源和构建产物发布目标。所有子模块的依赖下载和 Maven 发布均通过 Nexus 私服完成，同时使用自定义 Group ID（`cn.bjca.footstone.bpring.kafka`）以区分官方发布。
 
-当前编译依赖含 NES Spring Retry SNAPSHOT（`bjca-footstone-bpring-retry:1.3.4-nes.patch.1-SNAPSHOT`），因此**依赖解析**必须能访问 Nexus snapshots，而不仅是发布时选择 snapshot/release。
+当前编译依赖含 NES Spring Retry SNAPSHOT（`bjca-footstone-bpring-retry:1.3.4-nes.patch.1-SNAPSHOT`），并 import NES Data BOM SNAPSHOT（`bjca-footstone-bpring-data-bom:2021.2.18-nes.patch.2-SNAPSHOT`）。因此**依赖解析**必须能访问 Nexus snapshots，而不仅是发布时选择 snapshot/release。
 
 ## 修改文件清单
 
@@ -21,7 +21,7 @@
 - `allprojects.repositories` 配置：
   - Maven Central / Spring 仓库
   - Nexus **public**（`nexusPublicUrl`）
-  - Nexus **snapshots**（`nexusSnapshotUrl`）——用于解析 NES retry 等 SNAPSHOT
+  - Nexus **snapshots**（`nexusSnapshotUrl`）——用于解析 NES retry、NES Data BOM 等 SNAPSHOT
 - `publishing.repositories` 按版本号是否含 `-SNAPSHOT` 自动选择 snapshot 或 release 仓库
 
 ## 使用方法
@@ -55,6 +55,6 @@ nexusPassword=snapsh0ts@2021!
 **注意事项：**
 - 这些属性配置在用户级别的 `~/.gradle/gradle.properties` 中，不会提交到版本控制
 - `nexusPublicUrl` 用于依赖下载（pluginManagement 和 allprojects 仓库）
-- `nexusSnapshotUrl` 用于依赖解析 SNAPSHOT（如 NES spring-retry）以及 SNAPSHOT 制品发布
+- `nexusSnapshotUrl` 用于依赖解析 SNAPSHOT（如 NES spring-retry、NES Data BOM）以及 SNAPSHOT 制品发布
 - `nexusReleaseUrl` 用于 RELEASE 制品发布；根据版本号是否包含 `-SNAPSHOT` 自动选择发布目标
-- 在仍依赖内部 SNAPSHOT 的状态下，**不要**执行新的 component RELEASE 闭环（见 `openspec/specs/component-release` 与 change `adopt-spring-retry-nes-snapshot`）
+- 在仍依赖内部 SNAPSHOT 的状态下，**不要**执行新的 component RELEASE 闭环（见 `openspec/specs/component-release` 与 change `adopt-spring-retry-nes-snapshot` / `adopt-nes-spring-data-commons`）

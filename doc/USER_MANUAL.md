@@ -8,6 +8,7 @@
 2. **GAV 去特征化**：重命名 Maven 坐标以规避 SCA 工具误报
 3. **kafka-clients 升级**：升级到 3.9.2 获取最新功能与安全修复
 4. **Spring Retry NES**：编译依赖切换为含 CVE-2026-41710 源码修复的 SNAPSHOT（正式 RELEASE 前记为已缓解）
+5. **Spring Data Commons NES**：optional 投影依赖切换为 NES data-commons（CVE 主状态仍为免疫）
 
 ## 2. 版本与坐标
 
@@ -18,6 +19,7 @@
 | 运行时展示版本 | `2.9.13`（`gradle.properties` 的 `springKafkaVersion`） |
 | kafka-clients | `3.9.2` |
 | spring-retry（传递） | `cn.bjca.footstone.bpring.retry:bjca-footstone-bpring-retry:1.3.4-nes.patch.1-SNAPSHOT` |
+| spring-data-commons（optional） | `cn.bjca.footstone.bpring.data:bjca-footstone-bpring-data-commons:2.7.18-nes.patch.1` |
 
 ## 3. Makefile 命令参考
 
@@ -40,9 +42,9 @@
 从官方 Spring Kafka 迁移到本内部版本：
 
 1. 在 `pom.xml` / `build.gradle` 中替换 GAV 坐标（参见 `doc/GAV_MAPPING.md`）
-2. **无需修改** Java 源代码中的 `import` 语句（含 `org.springframework.kafka.*` 与 `org.springframework.retry.*`）
-3. 确认能解析 Nexus **snapshots**（本制品传递 NES spring-retry SNAPSHOT）
-4. 若同时使用 spring-boot-2.7 NES，建议在 Boot 侧将官方 `spring-retry` 统一替换为同一 NES 坐标，避免双实现
+2. **无需修改** Java 源代码中的 `import` 语句（含 `org.springframework.kafka.*`、`org.springframework.retry.*` 与 `org.springframework.data.*`）
+3. 确认能解析 Nexus **snapshots**（本制品传递 NES spring-retry SNAPSHOT，并 import NES Data BOM SNAPSHOT）
+4. 若同时使用 spring-boot-2.7 NES，建议在 Boot 侧将官方 `spring-retry` 统一替换为同一 NES 坐标，避免双实现；optional `spring-data-commons` 同理避免官方/NES 双坐标
 
 ## 5. Kafka Header 反序列化安全配置
 
